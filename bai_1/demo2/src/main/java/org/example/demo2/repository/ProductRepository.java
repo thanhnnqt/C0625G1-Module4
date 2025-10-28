@@ -2,12 +2,13 @@ package org.example.demo2.repository;
 
 
 import org.example.demo2.entity.Product;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@Repository
 public class ProductRepository implements IProductRepository{
 
     private static final Map<Integer, Product> products;
@@ -42,5 +43,16 @@ public class ProductRepository implements IProductRepository{
     @Override
     public void delete(int id) {
         products.remove(id);
+    }
+
+    @Override
+    public List<Product> search(String keyword) {
+        List<Product> result = new ArrayList<>();
+        for (Product p : products.values()) {
+            if (p.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                result.add(p);
+            }
+        }
+        return result;
     }
 }
