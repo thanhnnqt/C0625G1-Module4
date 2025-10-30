@@ -11,6 +11,9 @@ import java.util.List;
 public class ProductService implements IProductService{
     @Autowired
     public IProductRepository productRepository;
+    public ProductService(IProductRepository productRepository){
+        this.productRepository = productRepository;
+    }
 
     @Override
     public List<Product> findAll() {

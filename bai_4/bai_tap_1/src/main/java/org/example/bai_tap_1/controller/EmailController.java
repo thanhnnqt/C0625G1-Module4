@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/list")
 public class EmailController {
-    private final IEmailService emailService;
     @Autowired
-    public EmailController(IEmailService emailService){
+    private final IEmailService emailService;
+
+    public EmailController(IEmailService emailService) {
         this.emailService = emailService;
     }
+
     @GetMapping
     public String showForm(Model model) {
         model.addAttribute("settings", emailService.findAll());
