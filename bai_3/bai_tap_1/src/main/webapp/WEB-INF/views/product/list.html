@@ -123,7 +123,7 @@
             <td th:text="${status.count}"></td>
             <td th:text="${product.id}"></td>
             <td th:text="${product.name}"></td>
-            <td th:text="${product.price}"></td>
+            <td th:text="${#numbers.formatInteger(product.price, 3, 'POINT')} + ' VNĐ'"></td>
             <td th:text="${product.info}"></td>
             <td th:text="${product.country}"></td>
             <td>
