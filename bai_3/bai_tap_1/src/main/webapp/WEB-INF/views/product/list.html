@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Danh sách sản phẩm</title>
+    <style>
+        * {margin:0;padding:0;box-sizing:border-box;font-family:Inter,Roboto,Arial,sans-serif;}
+        body {background:#f4f7fb;color:#213547;padding:32px;}
+
+        .container {max-width:1000px;margin:auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(33,53,71,.08);}
+        h1 {margin-bottom:20px;font-size:1.5rem;color:#0f2b3a;}
+
+        /* Search */
+        .search-box {display:flex;gap:10px;margin-bottom:20px;}
+        .search-box input {flex:1;padding:10px;border-radius:8px;border:1px solid #d6e0e8;background:#fbfeff;}
+        .btn {padding:10px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.95rem;}
+        .btn-primary {background:linear-gradient(180deg,#d32f2f,#9a1c1c);color:#fff;}
+        .btn-outline {border:1px solid #d32f2f;background:0;color:#d32f2f;}
+
+        .add-btn {display:inline-block;margin-bottom:16px;font-size:.95rem;text-decoration:none;padding:8px 14px;border-radius:8px;border:1px solid #e57373;color:#0f2b3a;transition:.15s;}
+        .add-btn:hover {background:#ffebee;}
+
+        table {width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
+        th,td {padding:10px;border-bottom:1px solid #e1e9f0;text-align:left;}
+        th {background:#ffebee;color:#0f2b3a;font-weight:600;}
+        tr:hover td {background:#fff5f5;}
+
+        a.action-red {color:#d32f2f;text-decoration:none;font-weight:500;margin-right:8px;}
+        a.action:hover {text-decoration:underline;}
+
+        .msg {margin-top:16px;font-size:.9rem;color:#166534;}
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 18px;
+            background: #e63946; /* đỏ nổi bật */
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity .4s ease, transform .4s ease;
+            z-index: 9999;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .btn-edit{
+            background:#457b9d;color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;
+        }
+        .btn-delete{
+            background:#e63946;color:#fff;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;
+        }
+        .btn-edit:hover{opacity:.85;}
+        .btn-delete:hover{opacity:.85;}
+    </style>
+    <style>
+        /* Toast notification */
+        .toast {
+            position: fixed; top: 20px; right: 20px;
+            background:#d32f2f; color:#fff; padding:14px 18px;
+            border-radius:10px; font-size:.95rem; box-shadow:0 4px 12px rgba(0,0,0,.2);
+            opacity:0; transform: translateY(-20px); transition:.4s;
+            z-index:99999;
+        }
+        .toast.show {opacity:1; transform:translateY(0);}
+
+        /* Row delete animation */
+        .fade-out {animation: fadeOut .6s forwards ease-out;}
+        @keyframes fadeOut {0%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(.95);} }
+    </style>
+    <style>
+        /* Dark mode */
+        body.dark {
+            background:#121212;
+            color:#e2e2e2;
+        }
+        body.dark .container {background:#1e1e1e; box-shadow:0 8px 30px rgba(0,0,0,.6);}
+        body.dark table th {background:#2a2a2a; color:#f2f2f2;}
+        body.dark table td {border-bottom:1px solid #333;}
+        body.dark tr:hover td {background:#262626;}
+        body.dark input, body.dark button, body.dark select {
+            background:#292929 !important; color:#fff; border:1px solid #444;
+        }
+        body.dark .add-btn {border-color:#ff7979;color:#ff7979;}
+        body.dark .add-btn:hover {background:#471515;}
+        .dark-toggle {
+            position:fixed; bottom:20px; right:20px;
+            padding:12px 16px; border:none; border-radius:10px;
+            cursor:pointer; background:#d32f2f; color:#fff;
+            font-weight:600; z-index:9999;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Danh sách sản phẩm</h1>
+
+    <form th:action="@{/products/search}" method="get" class="search-box">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên...">
+        <button type="submit" class="btn btn-outline">Tìm kiếm</button>
+    </form>
+
+    <a href="/products/add" class="add-btn">+ Thêm mới</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Giá</th>
+            <th>Thông tin</th>
+            <th>Quốc gia</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product, status:${productList}">
+            <td th:text="${status.count}"></td>
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.info}"></td>
+            <td th:text="${product.country}"></td>
+            <td>
+                <a class="action" th:href="@{/products/edit/{id}(id=${product.id})}">Sửa</a>
+                <a class="action" th:href="@{/products/delete/{id}(id=${product.id})}" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p th:if="${mess}" th:text="${mess}" class="msg"></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js">  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// Gọi khi thêm mới
+// showToast('✅ Thêm mới thành công!');
+</script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const msg = document.querySelector('.msg');
+        if (msg) {
+            const duration = 1500;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+            function random(min, max) { return Math.random() * (max - min) + min; }
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.2, 0.8), y: Math.random() - 0.2 } }));
+            }, 200);
+        }
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+    // Toast function
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast'; toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(()=>toast.classList.add('show'),50);
+        setTimeout(()=>{toast.classList.remove('show');setTimeout(()=>toast.remove(),400);},2500);
+    }
+
+    // Show toast on success message
+    window.addEventListener('DOMContentLoaded', () => {
+        const msg = document.querySelector('.msg');
+        if (msg) {
+            showToast(msg.textContent);
+            const duration = 1500;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+            function random(min, max) { return Math.random() * (max - min) + min; }
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.2, 0.8), y: Math.random() - 0.2 } }));
+            }, 200);
+        }
+
+        // Delete smooth animation
+        document.querySelectorAll('a.action-red, a.action').forEach(link => {
+            if (link.textContent.includes('Xóa') || link.textContent.includes('Delete')) {
+                link.addEventListener('click', e => {
+                    const row = link.closest('tr');
+                    if (confirm('Bạn chắc chắn muốn xóa?')) {
+                        e.preventDefault();
+                        row.classList.add('fade-out');
+                        setTimeout(()=>{ window.location = link.href; }, 500);
+                    } else e.preventDefault();
+                });
+            }
+        });
+    });
+</script>
+<button class="dark-toggle" onclick="toggleDark()">🌙 Dark</button>
+<script>
+    function toggleDark(){
+        document.body.classList.toggle('dark');
+        localStorage.setItem('dark-mode', document.body.classList.contains('dark'));
+        document.querySelector('.dark-toggle').textContent = document.body.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+    }
+
+    // Load saved mode
+    if(localStorage.getItem('dark-mode') === 'true'){
+        document.body.classList.add('dark');
+        setTimeout(()=>document.querySelector('.dark-toggle').textContent='☀️ Light',50);
+    }
+</script>
+<!-- Toast container -->
+<div id="toast" class="toast hidden">✅ Thêm mới thành công!</div>
+</body>
+</html>

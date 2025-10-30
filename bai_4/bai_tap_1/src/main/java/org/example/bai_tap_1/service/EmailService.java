@@ -1,14 +1,18 @@
 package org.example.bai_tap_1.service;
 
 import org.example.bai_tap_1.entity.Email;
-import org.example.bai_tap_1.repository.EmailRepository;
 import org.example.bai_tap_1.repository.IEmailRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService implements IEmailService{
+    @Autowired
+    private final IEmailRepository emailRepository;
 
-    private final IEmailRepository emailRepository = new EmailRepository();
+    public EmailService(IEmailRepository emailRepository) {
+        this.emailRepository = emailRepository;
+    }
 
     @Override
     public Email findAll() {
