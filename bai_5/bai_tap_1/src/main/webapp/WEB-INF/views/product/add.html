@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Thêm mới</h2>
+<form action="/products/add" method="post" th:object="${product}">
+<!--    ID:-->
+<!--    <input th:field="*{id}" placeholder="Nhập id"><br>-->
+    Tên sản phẩm:
+    <input th:field="*{name}" placeholder="Nhập tên sản phẩm"><br>
+    Giá sản phẩm:
+    <input th:field="*{price}" type="number" placeholder="Nhập giá sản phẩm"><br>
+    Loại sản phẩm:
+    <select th:field="*{info}">
+        <option value="">-----Chọn-----</option>
+        <option value="SmartPhone">Điện thoại</option>
+        <option value="Laptop">Laptop</option>
+        <option value="Earphone">Tai nghe</option>
+    </select><br>
+    Xuất sứ:
+    <input th:field="*{country}" placeholder="Nhập nước sản xuất"><br>
+    <button>Lưu</button>
+</form>
+</body>
+</html>
