@@ -70,5 +70,4 @@ public class ProductController {
         redirectAttributes.addFlashAttribute("mess", "Cập nhật thành công");
         return "redirect:/products";
     }
-
 }

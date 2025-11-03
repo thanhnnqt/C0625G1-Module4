@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Blog</title>
+</head>
+<body>
+    <h1>Danh sách Blog</h1>
+    <form th:action="@{/blogs/search}" method="get" class="search-box">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên...">
+        <button type="submit" class="btn btn-outline">Tìm kiếm</button>
+    </form>
+
+    <a href="/blogs/add" class="add-btn">+ Thêm mới</a>
+
+    <table border="1">
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Tên Blog</th>
+            <th>Thông tin</th>
+            <th>Hành động</th>
+        </tr>
+        <tr th:each="blog, status:${blogList}">
+            <td th:text="${status.count}"></td>
+            <td th:text="${blog.id}"></td>
+            <td th:text="${blog.name}"></td>
+            <td th:text="${blog.blog}"></td>
+            <td>
+                <a class="action" th:href="@{/blogs/edit/{id}(id=${blog.id})}">Sửa</a>
+                <a class="action" th:href="@{/blogs/delete/{id}(id=${blog.id})}"
+                   onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
+            </td>
+        </tr>
+    </table>
+    <p th:if="${mess}" th:text="${mess}" class="msg"></p>
+</body>
+</html>
