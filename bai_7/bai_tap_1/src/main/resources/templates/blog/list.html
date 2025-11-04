@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <th:block th:replace="~{common/template::library}">
+
+    </th:block>
+</head>
+<body>
+<div th:replace="~{common/template::header}">
+</div>
+<h1>Danh sách Blog</h1>
+<form action="/blogs" method="get">
+    <input name="searchName" placeholder=" Nhập tên tìm kiếm " th:value="${searchName}">
+    <button>Tìm kiếm</button>
+</form>
+<button type="button" onclick="window.location.href='/blogs/add'">Thêm mới</button>
+<table border="1" style="width: 500px">
+    <tr>
+        <td>STT</td>
+        <td>Tên Blog</td>
+        <td>Tiêu đề</td>
+        <td>Chỉnh sửa</td>
+    </tr>
+
+    <tr th:each="blog, temp : ${blogPage.content}">
+        <td th:text="${temp.index + 1}"></td>
+        <td th:text="${blog.name}"></td>
+        <td th:text="${blog.tittle}"></td>
+        <td>
+            <a th:href="@{/blogs/update/{id}(id=${blog.id})}">Cập nhật</a> |
+            <a th:href="@{/blogs/details/{id}(id=${blog.id})}">Chi tiết</a>
+        </td>
+    </tr>
+</table>
+
+<div style="margin-top: 15px;">
+    <a th:if="${blogPage.hasPrevious()}" th:href="@{/blogs(page=${blogPage.number - 1},searchName=${searchName})}">Trước</a>
+    <span th:unless="${blogPage.hasPrevious()}" style="color: gray; cursor: not-allowed;">Trước</span>
+    <span th:text="${blogPage.number + 1}"></span>/<span th:text="${blogPage.totalPages}"></span>
+    <a th:if="${blogPage.hasNext()}" th:href="@{/blogs(page=${blogPage.number + 1},searchName=${searchName})}">Sau</a>
+    <span th:unless="${blogPage.hasNext()}" style="color: gray; cursor: not-allowed;">Sau</span>
+</div>
+<p id="message" th:text="${message}"></p>
+</body>
+<script>
+    setTimeout(function () {
+        document.getElementById("message").style.display = "none";
+    }, 3000)
+</script>
+</html>
