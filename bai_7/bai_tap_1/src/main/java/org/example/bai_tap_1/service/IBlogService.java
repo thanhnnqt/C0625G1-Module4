@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface IBlogService{
-    List<Blog> findAll();
-    Page<Blog> findAll(Pageable pageable);
     void save(Blog blog);
     Blog findById(Integer id);
     Page<Blog> findAllByNameContaining(String keyword, Pageable pageable);

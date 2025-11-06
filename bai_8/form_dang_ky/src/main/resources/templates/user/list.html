@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+</head>
+<body>
+
+<h1>User đã đăng ký</h1>
+
+<div th:each="u : ${userPage.content}">
+    <p>Tên người đăng ký: <span th:text="${u.name}"></span></p>
+    <p>Số điện thoại: <span th:text="${u.phoneNumber}"></span></p>
+    <p>Tuổi: <span th:text="${u.age}"></span></p>
+    <p>Email: <span th:text="${u.email}"></span></p>
+    <hr>
+</div>
+
+<a th:href="@{/users/add}">Quay lại form đăng ký</a>
+
+</body>
+</html>

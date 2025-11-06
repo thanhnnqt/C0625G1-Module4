@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Thêm mới</h1>
+<form th:action="@{/users/add}" th:object="${userDto}" method="post">
+
+    <label>Tên Người dùng</label>
+    <input type="text" th:field="*{name}" th:classappend="${#fields.hasErrors('name')} ? 'error' : ''">
+    <span class="error" th:errors="*{name}"></span>
+    <div class="space"></div>
+
+    <label>Số điện thoại</label>
+    <input type="text" th:field="*{phoneNumber}" th:classappend="${#fields.hasErrors('phoneNumber')} ? 'error' : ''">
+    <span class="error" th:errors="*{phoneNumber}"></span>
+    <div class="space"></div>
+
+
+    <label>Tuổi</label>
+    <input type="number" th:field="*{age}" th:classappend="${#fields.hasErrors('age')} ? 'error' : ''">
+    <span class="error" th:errors="*{age}"></span>
+    <div class="space"></div>
+
+    <label>Email</label>
+    <input type="text" th:field="*{email}" th:classappend="${#fields.hasErrors('email')} ? 'error' : ''">
+    <span class="error" th:errors="*{email}"></span>
+    <div class="space"></div>
+
+    <button type="submit">Đăng ký</button>
+    <a th:href="@{/users}">Quay lại</a>
+</form>
+</body>
+</html>
