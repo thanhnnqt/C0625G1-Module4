@@ -33,5 +33,4 @@ public class UserValidate implements Validator {
             errors.rejectValue("age", "age.invalid", "Tuổi phải từ 18 đến 120");
         }
     }
-
 }

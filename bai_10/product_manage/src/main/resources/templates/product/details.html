@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi tiết sản phẩm</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 40px;
+        }
+
+        .container {
+            width: 70%;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 25px;
+        }
+
+        .image {
+            flex: 1;
+        }
+
+        .image img {
+            width: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .info {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .name {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .price {
+            margin-top: 10px;
+            font-size: 22px;
+            color: red;
+            font-weight: bold;
+        }
+
+        .desc {
+            margin-top: 15px;
+            font-size: 17px;
+            color: #333;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 18px;
+            background: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1 style="text-align: center;">CHI TIẾT SẢN PHẨM</h1>
+
+<div class="container">
+
+    <div class="image">
+        <img th:src="@{${product.imageUrl}}" alt="Product Image">
+    </div>
+
+    <div class="info">
+        <div class="name" th:text="${product.name}"></div>
+
+        <div class="price"
+             th:text="${#numbers.formatDecimal(product.price, 0, 0)} + ' đ'">
+        </div>
+
+        <div class="desc" th:text="${product.description}"></div>
+
+        <a class="button"
+           th:href="@{'/add/' + ${product.id} + '?action=detail'}">
+            ➕ Add to Cart
+        </a>
+    </div>
+</div>
+
+<br>
+<a th:href="@{/shop}">⬅ Quay lại Shop</a>
+
+</body>
+</html>

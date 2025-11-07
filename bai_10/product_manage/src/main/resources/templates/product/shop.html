@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .cart-link {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .cart-link a {
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .info {
+            padding: 15px;
+        }
+
+        .name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            color: red;
+            font-size: 17px;
+            margin-bottom: 15px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 14px;
+            background: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+<div class="cart-link">
+    <a href="/shopping-cart">🛍️ Giỏ hàng của bạn</a>
+</div>
+<h1>DANH SÁCH SẢN PHẨM</h1>
+<a th:href="@{/add}">➕ Thêm mới sản phẩm</a>
+<div class="product-grid">
+    <div class="product-card" th:each="p : ${products}">
+        <a th:href="@{/product/{id}(id=${p.id})}">
+            <img th:src="@{${p.imageUrl}}" alt="product">
+        </a>
+        <div class="info">
+            <div class="name" th:text="${p.name}"></div>
+            <div class="price"
+                 th:text="${#numbers.formatDecimal(p.price,0,0)} + ' đ'">
+            </div>
+            <a class="button button-edit"
+               th:href="@{'/edit/' + ${p.id}}">
+                Edit
+            </a>
+            <a class="button"
+               th:href="@{/add/__${p.id}__(action='list')}">
+                Add to Cart
+            </a>
+            <a class="button"
+               th:href="@{'/delete/' + ${p.id}}"
+               style="background: red;">Delete</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
