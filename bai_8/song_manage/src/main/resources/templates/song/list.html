@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Song List</title>
+</head>
+<body>
+
+<h1>Danh sách bài hát</h1>
+
+<div th:each="s : ${songPage.content}">
+    <p>Tên người đăng ký: <span th:text="${s.name}"></span></p>
+    <p>Tên nghệ sĩ: <span th:text="${s.singer}"></span></p>
+    <p>Thể loại: <span th:text="${s.category}"></span></p>
+    <hr>
+</div>
+
+<a th:href="@{/songs/add}">Quay lại form đăng ký</a>
+</body>
+</html>
