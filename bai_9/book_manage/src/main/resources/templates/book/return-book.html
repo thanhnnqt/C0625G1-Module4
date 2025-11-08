@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang trả Sách</title>
+</head>
+<body>
+<h2>Trang trả sách</h2>
+<form th:action="@{/books/return}" method="post">
+  <label>Mã mượn sách:</label>
+  <input type="text" name="code" placeholder="Nhập mã..." required>
+  <input type="submit" value="Trả sách">
+</form>
+<p th:if="${message}"
+   th:text="${message}"
+   th:classappend="${message.contains('không') ? 'error' : 'message'}"></p>
+<div th:if="${book}" class="book-info">
+  <h3 th:text="${book.title}" class="book-info-title"></h3>
+  <p><strong>Số lượng hiện còn:</strong> <span th:text="${book.quantity}"></span></p>
+  <form th:action="@{/books/return/confirm}" method="post" class="form-center">
+    <input type="hidden" name="code" th:value="${code}">
+    <input type="submit" value="Xác nhận trả sách" class="btn-confirm">
+  </form>
+</div>
+<p th:if="${error}" th:text="${error}" class="error"></p>
+<a href="/books">Quay lại thư viện</a>
+</body>
+</html>

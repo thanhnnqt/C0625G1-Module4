@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang danh sách</title>
+</head>
+<body>
+<h2>Trang thư viện</h2>
+<div class="action-bar">
+  <a href="/books/return" class="return-button">Trả sách</a>
+</div>
+<table>
+  <tr>
+    <th>STT</th>
+    <th>Tên sách</th>
+    <th>Số lượng</th>
+    <th>Chi tiết</th>
+  </tr>
+  <tr th:each="book, stat : ${bookPage.content}">
+    <td th:text="${stat.index + 1 + bookPage.number * bookPage.size}"></td>
+    <td th:text="${book.title}"></td>
+    <td th:text="${book.quantity}"></td>
+    <td><a th:href="@{/books/detail/{id}(id=${book.id})}" class="button">Xem chi tiết</a></td>
+  </tr>
+</table>
+<div class="pagination">
+  <a th:if="${bookPage.hasPrevious()}" th:href="@{/books(page=${bookPage.number - 1})}">Trang trước</a>
+  <span th:each="i : ${#numbers.sequence(0, bookPage.totalPages - 1)}">
+        <a th:class="${i == bookPage.number ? 'active' : ''}"
+           th:href="@{/books(page=${i})}"
+           th:text="${i + 1}"></a>
+    </span>
+  <a th:if="${bookPage.hasNext()}" th:href="@{/books(page=${bookPage.number + 1})}">Trang sau</a>
+</div>
+</body>
+</html>

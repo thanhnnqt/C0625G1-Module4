@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Lỗi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 500px;
+      margin: 40px auto;
+      text-align: center;
+    }
+    .error-box {
+      border: 2px solid #d9534f;
+      padding: 20px;
+      border-radius: 6px;
+      background: #ffe6e6;
+    }
+    h2 {
+      color: #d9534f;
+      margin-bottom: 15px;
+    }
+    .msg {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+    }
+    a {
+      margin-top: 20px;
+      display: inline-block;
+      background: #007bff;
+      padding: 8px 14px;
+      border-radius: 4px;
+      color: white;
+      text-decoration: none;
+    }
+    a:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="error-box">
+  <h2>Đã xảy ra lỗi</h2>
+  <p class="msg" th:text="${message}"></p>
+</div>
+
+<a href="/books">Quay lại danh sách sách</a>
+
+</body>
+</html>

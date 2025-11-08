@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang chi tiết</title>
+</head>
+<body>
+<div class="card">
+  <div class="title" th:text="${book.title}">Tên sách</div>
+  <div class="info">
+    <strong>Số lượng còn:</strong>
+    <span th:text="${book.quantity}"></span>
+  </div>
+  <a th:href="@{/books/rent/{id}(id=${book.id})}" class="button">Mượn sách</a>
+  <br>
+  <a href="/books" class="back">← Quay lại thư viện</a>
+</div>
+</body>
+</html>
