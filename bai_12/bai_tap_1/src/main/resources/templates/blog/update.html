@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <th:block th:replace="~{common/template::library}">
+    </th:block>
+</head>
+<body>
+<div th:replace="~{common/template::header}">
+</div>
+<h1>Thêm mới</h1>
+<form th:action="@{/blogs/update}" th:object="${blog}" method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <label>Tên Blog</label>
+    <input type="text" name="name" th:field="*{name}"/>
+
+    <label>Tiêu đề Blog</label>
+    <input type="text" name="tittle" th:field="*{tittle}"/>
+
+    <label>Nội dung Blog</label>
+    <input type="text" name="content" th:field="*{content}"/>
+    <button type="submit">Lưu</button>
+    <a th:href="@{/blogs}">Quay lại</a>
+</form>
+</body>
+</html>

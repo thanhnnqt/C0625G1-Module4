@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Blog</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Danh sách Blog</h1>
+<div>
+    Nhập tên Blog:
+    <input id="name" placeholder="Nhập tên Blog"><br>
+    Nhập tóm tắt Blog:
+    <input id="tittle" placeholder="Nhập tóm tắt Blog"><br>
+    Nhập nội dung Blog:
+    <input id="content" placeholder="Nhập nội dung Blog"><br>
+    <br>
+    <button id="btn-save">Lưu</button>
+</div>
+
+<table border="1" style="border-collapse: collapse">
+    <thead>
+    <tr>
+        <td>STT</td>
+        <td>ID</td>
+        <td>Tên Blog</td>
+        <td>Tóm tắt Blog</td>
+        <td>Nội dung Blog</td>
+    </tr>
+    </thead>
+    <tbody id="content1">
+    </tbody>
+</table>
+
+<button id="btn-more">More</button>
+
+<script>
+    $(document).ready(function () {
+        let allData = [];
+        let visibleCount = 2;
+
+        function fetchData() {
+            $.ajax({
+                url: "http://localhost:8080/v1/api/blogs",
+                method: "get",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    allData = data.content;
+                    renderTable();
+                },
+                error: function () {
+                    console.log("Lỗi khi lấy dữ liệu");
+                }
+            });
+        }
+
+        function renderTable() {
+            let rows = "";
+            for (let i = 0; i < Math.min(visibleCount, allData.length); i++) {
+                rows += `<tr>
+                   <td>${i + 1}</td>
+                   <td>${allData[i].id}</td>
+                   <td>${allData[i].name}</td>
+                   <td>${allData[i].tittle}</td>
+                   <td>${allData[i].content}</td>
+                 </tr>`;
+            }
+            $("#content1").html(rows);
+
+            if (visibleCount >= allData.length) {
+                $("#btn-more").hide();
+            } else {
+                $("#btn-more").show();
+            }
+        }
+
+        $("#btn-save").click(function () {
+            let blog = {
+                name: $("#name").val(),
+                tittle: $("#tittle").val(),
+                content: $("#content").val()
+            };
+            console.log(blog);
+            $.ajax({
+                url: "http://localhost:8080/v1/api/blogs",
+                method: "post",
+                contentType: "application/json",
+                data: JSON.stringify(blog),
+                success: function () {
+                    fetchData();
+                    $("#name").val("");
+                    $("#tittle").val("");
+                    $("#content").val("");
+                }
+            });
+        });
+
+        $("#btn-more").click(function () {
+            visibleCount += 2;
+            renderTable();
+        });
+
+        fetchData();
+    });
+</script>
+</body>
+</html>
