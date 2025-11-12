@@ -36,43 +36,43 @@
 
 <script>
     $(document).ready(function () {
-        let allData = [];
-        let visibleCount = 2;
+        let currentPage = 0;
+        const pageSize = 2;
+        let totalPages = 0;
 
-        function fetchData() {
+        function fetchData(page) {
             $.ajax({
-                url: "http://localhost:8080/v1/api/blogs",
+                url: `http://localhost:8080/v1/api/blogs?page=${page}&size=${pageSize}`,
                 method: "get",
                 dataType: "json",
                 success: function (data) {
                     console.log(data);
-                    allData = data.content;
-                    renderTable();
+                    totalPages = data.totalPages;
+
+                    let rows = "";
+                    for (let i = 0; i < data.content.length; i++) {
+                        let index = page * pageSize + i + 1;
+                        rows += `<tr>
+                      <td>${index}</td>
+                      <td>${data.content[i].id}</td>
+                      <td>${data.content[i].name}</td>
+                      <td>${data.content[i].tittle}</td>
+                      <td>${data.content[i].content}</td>
+                    </tr>`;
+                    }
+
+                    $("#content1").append(rows);
+
+                    if (currentPage + 1 >= totalPages) {
+                        $("#btn-more").hide();
+                    } else {
+                        $("#btn-more").show();
+                    }
                 },
                 error: function () {
                     console.log("Lỗi khi lấy dữ liệu");
                 }
             });
-        }
-
-        function renderTable() {
-            let rows = "";
-            for (let i = 0; i < Math.min(visibleCount, allData.length); i++) {
-                rows += `<tr>
-                   <td>${i + 1}</td>
-                   <td>${allData[i].id}</td>
-                   <td>${allData[i].name}</td>
-                   <td>${allData[i].tittle}</td>
-                   <td>${allData[i].content}</td>
-                 </tr>`;
-            }
-            $("#content1").html(rows);
-
-            if (visibleCount >= allData.length) {
-                $("#btn-more").hide();
-            } else {
-                $("#btn-more").show();
-            }
         }
 
         $("#btn-save").click(function () {
@@ -81,27 +81,26 @@
                 tittle: $("#tittle").val(),
                 content: $("#content").val()
             };
-            console.log(blog);
+
             $.ajax({
                 url: "http://localhost:8080/v1/api/blogs",
                 method: "post",
                 contentType: "application/json",
                 data: JSON.stringify(blog),
                 success: function () {
-                    fetchData();
-                    $("#name").val("");
-                    $("#tittle").val("");
-                    $("#content").val("");
+                    $("#content1").empty();
+                    currentPage = 0;
+                    fetchData(currentPage);
                 }
             });
         });
 
         $("#btn-more").click(function () {
-            visibleCount += 2;
-            renderTable();
+            currentPage++;
+            fetchData(currentPage);
         });
 
-        fetchData();
+        fetchData(currentPage);
     });
 </script>
 </body>
