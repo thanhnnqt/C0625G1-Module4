@@ -1,0 +1,33 @@
+<div th:fragment="mainMenu" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+     style="border: 1px solid #ccc; padding:5px; margin-bottom:20px; display: flex; justify-content: space-between">
+
+    <div>
+        <!-- Link trang chính -->
+        <a th:href="@{/blogs}" style="font-family: 'Dancing Script'; color: deeppink; font-weight: bold; font-size: x-large">Blogs</a>
+        | &nbsp;
+        <a th:href="@{/}">Home</a>
+        | &nbsp;
+        <a th:href="@{/userInfo}">User Info</a>
+        | &nbsp;
+
+        <!-- Chỉ ADMIN mới thấy link Admin -->
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">Admin | </a>
+
+        <!-- Chỉ USER hoặc ADMIN mới thấy link add/update blog -->
+        <a sec:authorize="hasRole('ROLE_USER')" th:href="@{/blogs/add}">Add Blog | </a>
+
+    </div>
+
+    <div>
+        <!-- Đăng xuất nếu đã đăng nhập -->
+        <a sec:authorize="isAuthenticated()" th:href="@{/logout}">Logout</a>
+        <!-- Hiển thị login nếu chưa đăng nhập -->
+        <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Login</a>
+        |
+        <!-- Hiển thị username nếu đã đăng nhập -->
+        <span style="color: red" sec:authorize="isAuthenticated()">
+            <span sec:authentication="name"></span>
+        </span>
+    </div>
+
+</div>

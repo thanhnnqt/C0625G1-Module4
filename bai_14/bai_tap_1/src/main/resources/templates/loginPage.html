@@ -1,0 +1,41 @@
+<!-- HTML -->
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+</head>
+<body>
+<th:block th:replace="~{_menu::mainMenu}"></th:block>
+
+<h1>Login</h1>
+
+<!-- Thông báo trạng thái -->
+<div th:if="${param.error}" style="color:red;">Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản/mật khẩu.</div>
+<div th:if="${param.logout}" style="color:green;">Bạn đã đăng xuất khỏi hệ thống.</div>
+
+<h3>Enter username and password:</h3>
+<form th:action="@{/process-login}" method="post">
+    <table>
+        <tr>
+            <td>User:</td>
+            <td><input type="text" name="username" autocomplete="username" required /></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td><input type="password" name="password" autocomplete="current-password" required /></td>
+        </tr>
+        <!-- Nếu bạn bật lại CSRF, bỏ comment 3 dòng dưới -->
+        <!--
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        -->
+
+        <tr>
+            <td colspan="2">
+                <button id="btn" type="submit">Đăng nhập</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

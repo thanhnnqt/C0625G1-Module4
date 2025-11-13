@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Blog</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Danh sách Blog</h1>
+<div>
+    Nhập tên Blog:
+    <input id="name" placeholder="Nhập tên Blog"><br>
+    Nhập tóm tắt Blog:
+    <input id="tittle" placeholder="Nhập tóm tắt Blog"><br>
+    Nhập nội dung Blog:
+    <input id="content" placeholder="Nhập nội dung Blog"><br>
+    <br>
+    <button id="btn-save">Lưu</button>
+</div>
+
+<table border="1" style="border-collapse: collapse">
+    <thead>
+    <tr>
+        <td>STT</td>
+        <td>ID</td>
+        <td>Tên Blog</td>
+        <td>Tóm tắt Blog</td>
+        <td>Nội dung Blog</td>
+    </tr>
+    </thead>
+    <tbody id="content1">
+    </tbody>
+</table>
+
+<button id="btn-more">More</button>
+
+<script>
+    $(document).ready(function () {
+        let currentPage = 0;
+        const pageSize = 2;
+        let totalPages = 0;
+
+        function fetchData(page) {
+            $.ajax({
+                url: `http://localhost:8080/v1/api/blogs?page=${page}&size=${pageSize}`,
+                method: "get",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    totalPages = data.totalPages;
+
+                    let rows = "";
+                    for (let i = 0; i < data.content.length; i++) {
+                        let index = page * pageSize + i + 1;
+                        rows += `<tr>
+                      <td>${index}</td>
+                      <td>${data.content[i].id}</td>
+                      <td>${data.content[i].name}</td>
+                      <td>${data.content[i].tittle}</td>
+                      <td>${data.content[i].content}</td>
+                    </tr>`;
+                    }
+
+                    $("#content1").append(rows);
+
+                    if (currentPage + 1 >= totalPages) {
+                        $("#btn-more").hide();
+                    } else {
+                        $("#btn-more").show();
+                    }
+                },
+                error: function () {
+                    console.log("Lỗi khi lấy dữ liệu");
+                }
+            });
+        }
+
+        $("#btn-save").click(function () {
+            let blog = {
+                name: $("#name").val(),
+                tittle: $("#tittle").val(),
+                content: $("#content").val()
+            };
+
+            $.ajax({
+                url: "http://localhost:8080/v1/api/blogs",
+                method: "post",
+                contentType: "application/json",
+                data: JSON.stringify(blog),
+                success: function () {
+                    $("#content1").empty();
+                    currentPage = 0;
+                    fetchData(currentPage);
+                }
+            });
+        });
+
+        $("#btn-more").click(function () {
+            currentPage++;
+            fetchData(currentPage);
+        });
+
+        fetchData(currentPage);
+    });
+</script>
+</body>
+</html>

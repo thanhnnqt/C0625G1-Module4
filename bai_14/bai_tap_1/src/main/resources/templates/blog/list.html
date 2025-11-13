@@ -2,9 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Blog List</title>
     <th:block th:replace="~{common/template::library}"></th:block>
 </head>
@@ -13,16 +10,6 @@
 
 <h1 th:text="#{blog.list.title}">Blog List</h1>
 
-<!-- Language selector -->
-<form action="#" method="get" style="float: right; margin-bottom: 10px;">
-    <input type="hidden" name="page" th:value="${blogPage.number}">
-    <input type="hidden" name="searchName" th:value="${searchName}">
-    <select name="lang" onchange="this.form.submit()">
-        <option value="vi" th:selected="${#locale.language == 'vi'}">Vietnamese</option>
-        <option value="en" th:selected="${#locale.language == 'en'}">English</option>
-    </select>
-</form>
-
 <!-- Search form -->
 <form action="/blogs" method="get">
     <input name="searchName" placeholder="Enter blog name" th:value="${searchName}">
@@ -30,7 +17,10 @@
 </form>
 
 <!-- Add new blog -->
-<button type="button" onclick="window.location.href='/blogs/add'" th:text="#{blog.add.button}">Add New</button>
+<button type="button"
+        onclick="window.location.href='/blogs/add'"
+        th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''EDITOR'')')}"
+        th:text="#{blog.add.button}">Add New</button>
 
 <!-- Blog table -->
 <table border="1" style="width: 500px">
@@ -45,8 +35,10 @@
         <td th:text="${blog.name}"></td>
         <td th:text="${blog.tittle}"></td>
         <td>
-            <a th:href="@{/blogs/update/{id}(id=${blog.id})}" th:text="#{blog.update.link}">Update</a> |
             <a th:href="@{/blogs/details/{id}(id=${blog.id})}" th:text="#{blog.details.link}">Details</a>
+            <a th:href="@{/blogs/update/{id}(id=${blog.id})}"
+               th:if="${#authorization.expression('hasAnyRole(''ADMIN'',''EDITOR'')')}"
+               th:text="#{blog.update.link}">Update</a>
         </td>
     </tr>
 </table>
@@ -66,7 +58,7 @@
     <span th:unless="${blogPage.hasNext()}" style="color: gray; cursor: not-allowed;" th:text="#{pagination.next}">Next</span>
 </div>
 
-<!-- Message -->
+<!-- Flash message -->
 <p id="message" th:text="${message}"></p>
 
 <script>
@@ -74,5 +66,6 @@
         document.getElementById("message").style.display = "none";
     }, 3000)
 </script>
+<a th:href="@{/userInfo}">Back to user home</a>
 </body>
 </html>
