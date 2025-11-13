@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +23,9 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-    // ---------------- LIST ----------------
+    // Hiển thị danh sách blog với phân trang và tìm kiếm
     @GetMapping("")
-    public String showList(@PageableDefault(page = 0, size = 2, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public String showList(@PageableDefault(page = 0, size = 5, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                            @RequestParam(name = "searchName", required = false, defaultValue = "") String searchName,
                            ModelMap model) {
         Page<Blog> blogPage = blogService.findAllByNameContaining(searchName, pageable);
@@ -34,15 +34,14 @@ public class BlogController {
         return "blog/list";
     }
 
-    // ---------------- ADD ----------------
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EDITOR')")
+    // Trang thêm blog mới
     @GetMapping("/add")
-    public String createBlogs(ModelMap model) {
+    public String showAddForm(Model model) {
         model.addAttribute("blog", new Blog());
         return "blog/add";
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EDITOR')")
+    // Xử lý thêm blog
     @PostMapping("/add")
     public String createBlog(@ModelAttribute("blog") Blog blog,
                              BindingResult bindingResult,
@@ -55,35 +54,36 @@ public class BlogController {
         return "redirect:/blogs";
     }
 
-    // ---------------- DETAILS ----------------
+    // Trang chi tiết blog
     @GetMapping("/details/{id}")
-    public String getDetailBlogById(@PathVariable Integer id, ModelMap model) {
+    public String showDetails(@PathVariable Integer id, ModelMap model, RedirectAttributes redirect) {
         Blog blog = blogService.findById(id);
+        if (blog == null) {
+            redirect.addFlashAttribute("mess", "Không tìm thấy blog");
+            return "redirect:/blogs";
+        }
         model.addAttribute("blog", blog);
         return "blog/details";
     }
 
-    // ---------------- UPDATE ----------------
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EDITOR')")
+    // Trang sửa blog
     @GetMapping("/update/{id}")
-    public String showEditForm(@PathVariable("id") int id,
-                               ModelMap model,
-                               RedirectAttributes redirectAttributes) {
+    public String showUpdateForm(@PathVariable Integer id, Model model, RedirectAttributes redirect) {
         Blog blog = blogService.findById(id);
         if (blog == null) {
-            redirectAttributes.addFlashAttribute("message", "Không tìm thấy blog");
+            redirect.addFlashAttribute("mess", "Không tìm thấy blog");
             return "redirect:/blogs";
         }
         model.addAttribute("blog", blog);
         return "blog/update";
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('EDITOR')")
+    // Xử lý cập nhật blog
     @PostMapping("/update")
-    public String update(@ModelAttribute Blog blog,
-                         RedirectAttributes redirectAttributes) {
+    public String updateBlog(@ModelAttribute Blog blog, RedirectAttributes redirect) {
         blogService.save(blog);
-        redirectAttributes.addFlashAttribute("message", "Cập nhật thành công");
+        redirect.addFlashAttribute("mess", "Cập nhật thành công");
         return "redirect:/blogs";
     }
+    
 }
